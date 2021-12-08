@@ -62,6 +62,7 @@ def get_all_keys():
         }
     """
     global key_storage
+    # blindly return everything
     return serializers.generate_response({"keys": key_storage}, True)
 
 
@@ -93,6 +94,7 @@ def set_key():
     try:
         user_data = serializers.check_set_request(request.data)
 
+        # setter for key-value
         key_storage[user_data['key_name']] = user_data['key_value']
 
         return serializers.generate_response(f"Key created with ID {user_data['key_name']}", True, 201)
