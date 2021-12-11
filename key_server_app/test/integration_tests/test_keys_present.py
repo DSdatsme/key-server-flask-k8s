@@ -27,7 +27,6 @@ class KeysPresentTests(unittest.TestCase):
         self.assertEqual(app.debug, False)
 
         for each_key, each_value in self.STARTER_DATA.items():
-            print(each_key)
             self.app.post('/set', data=json.dumps({
                 "key_name": each_key,
                 "key_value": each_value
