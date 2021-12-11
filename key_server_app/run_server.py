@@ -5,7 +5,7 @@ import threading
 import time
 from lib import serializers
 from lib import key_utils
-from constants import SEARCH_KEY_NOT_FOUND_STATUS_CODE, SEARCH_KEY_NOT_FOUND_MESSAGE
+from constants import SEARCH_KEY_NOT_FOUND_STATUS_CODE, SEARCH_KEY_NOT_FOUND_MESSAGE, SUCCESS_KEY_INSERT_RESPONSE_STATUS_CODE, SUCCESS_KEY_INSERT_RESPONSE_MESSAGE
 
 app = Flask(__name__)
 
@@ -98,7 +98,7 @@ def set_key():
         # setter for key-value
         key_storage[user_data['key_name']] = user_data['key_value']
 
-        return serializers.generate_response(f"Key created with ID {user_data['key_name']}", True, 201)
+        return serializers.generate_response(SUCCESS_KEY_INSERT_RESPONSE_MESSAGE.format(user_data['key_name']), True, SUCCESS_KEY_INSERT_RESPONSE_STATUS_CODE)
     except Exception as e:
         print("Error: Key Creation failed!")
         return serializers.generate_response(e.args[0], False, e.args[1])
