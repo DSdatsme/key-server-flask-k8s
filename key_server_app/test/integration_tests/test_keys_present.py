@@ -1,12 +1,13 @@
 import os
 import json
 import unittest
+import pytest
 from random import randrange
 
 from run_server import app
 from constants import *
 
-
+@pytest.mark.integrationtest
 class KeysPresentTests(unittest.TestCase):
 
     # NOTE: check the test cases before changing the value here
@@ -35,7 +36,6 @@ class KeysPresentTests(unittest.TestCase):
 
 ################# TESTS #################
     ##### Get All keys #####
-
     def test_get_all_keys_present(self):
 
         _EXPECTED_GET_ALL_KEYS_RESPONSE = {

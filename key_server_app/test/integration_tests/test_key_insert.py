@@ -1,11 +1,13 @@
 import os
 import json
 import unittest
+import pytest
 
 from run_server import app
 from constants import *
 
 
+@pytest.mark.integrationtest
 class EmptyKeysTests(unittest.TestCase):
 
     def setUp(self):

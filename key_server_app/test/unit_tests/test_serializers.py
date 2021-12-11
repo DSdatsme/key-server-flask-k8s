@@ -1,11 +1,13 @@
 import json
 import unittest
+import pytest
 
 from run_server import app
 from constants import *
 from lib.serializers import check_set_request, check_search_request, generate_response
 
 
+@pytest.mark.unittest
 class EmptyKeysTests(unittest.TestCase):
 
     def setUp(self):

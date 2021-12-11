@@ -1,9 +1,11 @@
 import unittest
+import pytest
 
 from constants import *
 from lib.key_utils import is_key_present, search_key_by_prefix, search_key_by_suffix
 
 
+@pytest.mark.unittest
 class EmptyKeysTests(unittest.TestCase):
 
     def setUp(self):
