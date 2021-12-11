@@ -5,6 +5,7 @@ import threading
 import time
 from lib import serializers
 from lib import key_utils
+from constants import SEARCH_KEY_NOT_FOUND_STATUS_CODE, SEARCH_KEY_NOT_FOUND_MESSAGE
 
 app = Flask(__name__)
 
@@ -141,7 +142,7 @@ def search_key():
         if response_data:
             return serializers.generate_response({"keys": response_data}, True)
         else:
-            raise Exception("No keys found with the given query", 404)
+            raise Exception(SEARCH_KEY_NOT_FOUND_MESSAGE, SEARCH_KEY_NOT_FOUND_STATUS_CODE)
     except Exception as e:
         print("Error: Key Search failed!")
         return serializers.generate_response(e.args[0], False, e.args[1])
