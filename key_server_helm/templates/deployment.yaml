@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "key-value-app.fullname" . }}
+  annotations:
+    kubernetes.io/change-cause: {{ .Release.Name }}
+  labels:
+    {{- include "key-value-app.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "key-value-app.selectorLabels" . | nindent 6 }}
+  strategy:
+    {{- toYaml .Values.deploymentConfig.strategy | nindent 8 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "key-value-app.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "key-value-app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.deploymentConfig.terminationGracePeriod | default 30 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.deploymentConfig.containerPort | default .Chart.AppVersion }}
+              protocol: TCP
+          startupProbe:
+            exec:
+              command:
+              - "echo"
+              - "placeholder"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /get
+              port: {{ .Values.deploymentConfig.containerPort | default "http" }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /get
+              port: {{ .Values.deploymentConfig.containerPort | default "http" }}
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            successThreshold: 3
+            failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - "/bin/bash"
+                  - "echo"
+                  - "TODO: backup keys on disk"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
