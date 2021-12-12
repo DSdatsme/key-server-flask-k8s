@@ -3,6 +3,45 @@
 This project is about hosting a Dockerized Flask app on k8s using helm.
 The Flask app stores key-value in memory with features of fetching and searching them. Check out list of APIs below for features.
 
+- [Flask Key Server App Deployment on K8s](#flask-key-server-app-deployment-on-k8s)
+  - [Build Docker Image](#build-docker-image)
+  - [Push Docker Image](#push-docker-image)
+  - [Run Test Cases](#run-test-cases)
+    - [Examples](#examples)
+      - [Run only unit tests](#run-only-unit-tests)
+      - [Run only integration tests](#run-only-integration-tests)
+  - [Deploy App](#deploy-app)
+    - [Debug helm templates](#debug-helm-templates)
+    - [uninstall helm](#uninstall-helm)
+  - [Setup Ingress](#setup-ingress)
+  - [Setup CertManger](#setup-certmanger)
+  - [Open/Use App](#openuse-app)
+  - [Endpoints](#endpoints)
+    - [Get Specific Key](#get-specific-key)
+      - [Endpoint](#endpoint)
+      - [Parameters](#parameters)
+      - [Request](#request)
+      - [Response](#response)
+    - [Get All Keys](#get-all-keys)
+      - [Endpoint](#endpoint-1)
+      - [Parameters](#parameters-1)
+      - [Request](#request-1)
+      - [Response](#response-1)
+    - [Set Key](#set-key)
+      - [Endpoint](#endpoint-2)
+      - [Parameters](#parameters-2)
+      - [Request](#request-2)
+      - [Response](#response-2)
+    - [Search Keys](#search-keys)
+      - [Endpoint](#endpoint-3)
+      - [Parameters](#parameters-3)
+      - [Request](#request-3)
+      - [Response](#response-3)
+    - [Monitoring](#monitoring)
+      - [Endpoint](#endpoint-4)
+      - [Parameters](#parameters-4)
+      - [Request](#request-4)
+
 ## Build Docker Image
 
 ```bash
@@ -286,3 +325,24 @@ curl --location --request GET 'https://dsdatsme.ddns.net/search?prefix=ke'
 ```
 
 </details>
+
+### Monitoring
+
+<details>
+
+<summary>Make a GET request to fetch monitoring data.</summary>
+
+This endpoint will be used by prometheus metrics scraper to get all the data from application.
+#### Endpoint
+
+> GET /metrics
+
+#### Parameters
+
+No parameters required.
+
+#### Request
+
+```bash
+curl --location --request GET 'https://<DOMAIN>/metrics'
+```
