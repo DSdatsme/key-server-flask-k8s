@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 
-from flask import Flask, jsonify, request
-import threading
-import time
+from flask import Flask, request, Response
+import prometheus_client as prom
+
 from lib import serializers
 from lib import key_utils
+from lib import prom_monitor
 from constants import SEARCH_KEY_NOT_FOUND_STATUS_CODE, SEARCH_KEY_NOT_FOUND_MESSAGE, SUCCESS_KEY_INSERT_RESPONSE_STATUS_CODE, SUCCESS_KEY_INSERT_RESPONSE_MESSAGE
 
 app = Flask(__name__)
+
 
 # In-memory store variable.
 key_storage = {}
 
 
 @app.route('/get/<key>', methods=['GET'])
+@prom_monitor.monitor_response_time
+@prom_monitor.monitor_status_code
 def get_key(key: str):
     """Method to return specific key value based on ID in url.
 
@@ -41,6 +45,8 @@ def get_key(key: str):
 
 
 @app.route('/get', methods=['GET'])
+@prom_monitor.monitor_response_time
+@prom_monitor.monitor_status_code
 def get_all_keys():
     """Method to return all key stored in the process.
 
@@ -68,6 +74,8 @@ def get_all_keys():
 
 
 @app.route('/set', methods=['POST'])
+@prom_monitor.monitor_response_time
+@prom_monitor.monitor_status_code
 def set_key():
     """Method to store key in the flask process.
 
@@ -105,6 +113,8 @@ def set_key():
 
 
 @app.route('/search', methods=['GET'])
+@prom_monitor.monitor_response_time
+@prom_monitor.monitor_status_code
 def search_key():
     """Method to have search key functionality based on prefix and suffix of key ID
 
@@ -142,10 +152,19 @@ def search_key():
         if response_data:
             return serializers.generate_response({"keys": response_data}, True)
         else:
-            raise Exception(SEARCH_KEY_NOT_FOUND_MESSAGE, SEARCH_KEY_NOT_FOUND_STATUS_CODE)
+            raise Exception(SEARCH_KEY_NOT_FOUND_MESSAGE,
+                            SEARCH_KEY_NOT_FOUND_STATUS_CODE)
     except Exception as e:
         print("Error: Key Search failed!")
         return serializers.generate_response(e.args[0], False, e.args[1])
+
+
+@app.route('/metrics', methods=['GET'])
+@prom_monitor.monitor_response_time
+@prom_monitor.monitor_status_code
+def prom_metrics():
+    prom_monitor.monitor_stored_keys(key_storage)
+    return Response(prom.generate_latest(), mimetype=str('text/plain; version=0.0.4; charset=utf-8'))
 
 
 if __name__ == '__main__':
