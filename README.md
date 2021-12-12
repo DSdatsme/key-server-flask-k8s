@@ -75,13 +75,13 @@ Following are some ways to run test cases
 #### Run only unit tests
 
 ```bash
-docker run -t dsdatsme/key-server-flask:v2 pytest -m unittest --cache-clear --verbose
+docker run -t dsdatsme/key-server-flask:v2 pytest -m unittest --cache-clear --verbose --disable-warnings
 ```
 
 #### Run only integration tests
 
 ```bash
-docker run -t dsdatsme/key-server-flask:latest pytest -m integrationtest --cache-clear --verbose
+docker run -t dsdatsme/key-server-flask:latest pytest -m integrationtest --cache-clear --verbose --disable-warnings
 ```
 
 ## Deploy App

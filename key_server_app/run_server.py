@@ -167,5 +167,11 @@ def prom_metrics():
     return Response(prom.generate_latest(), mimetype=str('text/plain; version=0.0.4; charset=utf-8'))
 
 
+# wipe keys helper method
+def wipe_keys():
+    global key_storage
+    key_storage = {}
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=False)

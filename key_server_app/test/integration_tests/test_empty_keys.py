@@ -3,7 +3,7 @@ import json
 import unittest
 import pytest
 
-from run_server import app
+from run_server import app, wipe_keys
 from constants import *
 
 
@@ -17,6 +17,7 @@ class EmptyKeysTests(unittest.TestCase):
         self.app = app.test_client()
 
         self.assertEqual(app.debug, False)
+        wipe_keys()
 
 
 ################# TESTS #################

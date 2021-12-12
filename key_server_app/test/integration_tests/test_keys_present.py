@@ -4,7 +4,7 @@ import unittest
 import pytest
 from random import randrange
 
-from run_server import app
+from run_server import app, wipe_keys
 from constants import *
 
 @pytest.mark.integrationtest
@@ -26,7 +26,7 @@ class KeysPresentTests(unittest.TestCase):
         self.app = app.test_client()
 
         self.assertEqual(app.debug, False)
-
+        wipe_keys()
         for each_key, each_value in self.STARTER_DATA.items():
             self.app.post('/set', data=json.dumps({
                 "key_name": each_key,
